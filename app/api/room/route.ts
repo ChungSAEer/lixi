@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
-export const runtime = "edge";
+import { storage } from "@/lib/storage";
+
+export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -18,19 +20,11 @@ export async function POST(request: Request) {
         message: "Amount range must be between 10 and 500",
       });
     }
-    const created = await fetch(`${process.env.NEXT_PUBLIC_API ?? ""}/room`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ amount }),
-    });
-    const data = await created.json();
-    if (!data?.id) {
-      return NextResponse.json({ message: "Error creating room" });
-    }
 
-    return NextResponse.json({ id: data?.id });
+    const [amountMin, amountMax] = amount;
+    const id = storage.createRoom(amountMin, amountMax);
+
+    return NextResponse.json({ id });
   } catch (e) {
     console.log("e", e);
     return NextResponse.json({ message: "Error" });

@@ -181,6 +181,7 @@ export default function PageRandom({
                     animate={{ height: 200, opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2 }}
+                    onClick={handleOpenLixi}
                     className={cn(
                         "w-[300px] bg-[#FF3B3B] hover:bg-[#FF2424] transition-colors",
                         "border-2 border-[#FFD700] shadow-lg cursor-pointer",
@@ -197,9 +198,9 @@ export default function PageRandom({
                         <div className="w-12 h-12 rounded-full border-2 border-[#FFD700] bg-[#FF3B3B]" />
                     </div>
 
-                    <button className="absolute font-pacifico bottom-4 w-full text-center text-[#FFD700] font-bold text-xl hover:text-[#FFF7CC] transition-colors" onClick={handleOpenLixi} >
+                    <div className="absolute font-pacifico bottom-4 w-full text-center text-[#FFD700] font-bold text-xl hover:text-[#FFF7CC] transition-colors pointer-events-none">
                         Nhận Lì Xì Ngay
-                    </button>
+                    </div>
                 </motion.div>)}
                 <AnimatePresence>
                     {(imgQr && money) && (

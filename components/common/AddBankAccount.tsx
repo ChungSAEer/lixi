@@ -27,6 +27,7 @@ interface IBank {
 
 export default function AddBankAccount() {
     const [banks, setBanks] = React.useState<IBank[]>([]);
+    const [loading, setLoading] = React.useState(true);
 
     const [selectedBank, setSelectedBank] = React.useState<string | undefined>(() => {
         const setting = getItem<string>(KEY_SETTING);
@@ -51,11 +52,19 @@ export default function AddBankAccount() {
     const [visible, setVisible] = React.useState(false);
 
     useEffect(() => {
-        fetch("https://api.vietqr.io/v2/banks").then((res) => {
-            res.json().then((data) => {
-                setBanks(data?.data);
+        fetch("https://api.vietqr.io/v2/banks")
+            .then((res) => res.json())
+            .then((data) => {
+                if (data?.data && Array.isArray(data.data)) {
+                    setBanks(data.data);
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching banks:", error);
+            })
+            .finally(() => {
+                setLoading(false);
             });
-        });
     }, []);
 
     const handleSave = useCallback(() => {
@@ -91,11 +100,11 @@ export default function AddBankAccount() {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
-                    <Select value={selectedBank} onValueChange={setSelectedBank}>
+                    <Select value={selectedBank} onValueChange={setSelectedBank} disabled={loading}>
                         <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Chọn ngân hàng " />
+                            <SelectValue placeholder={loading ? "Đang tải..." : "Chọn ngân hàng"} />
                         </SelectTrigger>
-                        <SelectContent className="absolute -bottom-20">
+                        <SelectContent className="absolute -bottom-20 max-h-[300px] overflow-y-auto">
                             <SelectGroup>
                                 {banks.map((bank) => (
                                     <SelectItem key={bank.id} value={bank.code}>
@@ -105,7 +114,8 @@ export default function AddBankAccount() {
                                                 alt={bank.name}
                                                 width={40}
                                                 height={30}
-                                                className="w-8 h-8"
+                                                className="w-8 h-8 object-contain"
+                                                unoptimized
                                             />
                                             <span>{bank.shortName}</span>
                                         </div>

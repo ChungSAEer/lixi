@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
+import { storage } from "@/lib/storage";
 
-export const runtime = "edge";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   const body = await request.json();
   const { id, accountId } = body;
-  if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+  
+  if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
     return NextResponse.json({ message: "Id không hợp lệ" });
   }
 
@@ -14,23 +16,22 @@ export async function POST(request: Request) {
   }
 
   try {
-    const lixi = await fetch(
-      `${process.env.NEXT_PUBLIC_API ?? ""}/get-lixi/${id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ accountId: String(accountId) }),
-      }
-    ).then((res) => res.json());
+    // Check if room exists
+    const room = storage.getRoom(id);
+    if (!room) {
+      return NextResponse.json({ message: "Room không tồn tại" });
+    }
 
-    if (!lixi) {
+    // Claim lixi
+    const result = storage.claimLixi(id, String(accountId));
+    
+    if (!result) {
       return NextResponse.json({ message: "Lỗi khi nhận lì xì" });
     }
 
-    return NextResponse.json({ ...lixi });
-  } catch {
+    return NextResponse.json({ money: result.money });
+  } catch (error) {
+    console.error("Error claiming lixi:", error);
     return NextResponse.json({ message: "Lỗi khi nhận lì xì" });
   }
 }
