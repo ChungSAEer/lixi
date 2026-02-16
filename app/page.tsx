@@ -96,7 +96,7 @@ export default function Home() {
                             colorPrimaryBorderHover: '#FF4848',
                         },
                     }}>
-                        <SliderAntd range min={10000} max={50000} step={5000} value={amountRange} onChange={setAmountRange} className="w-full" />
+                        <SliderAntd range min={10000} max={50000} step={5000} value={amountRange} disabled className="w-full" />
                     </ConfigProvider>
                     <div className="flex justify-between text-black my-4 w-full font-pacifico text-2xl">
                         <span>{formatCurrency(amountRange[0])} </span>
