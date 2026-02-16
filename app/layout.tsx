@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: "Lì xì túi mù",
     description: "Lì xì túi mù ngày Tết 2025",
 };
-export const runtime = "edge";
+
 export default function RootLayout({
     children,
 }: Readonly<{
