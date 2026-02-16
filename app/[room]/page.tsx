@@ -97,7 +97,7 @@ export default function PageRandom({
             return;
         }
         setMoney(data.money);
-        setImgQr(`https://qr.sepay.vn/img?bank=${code}&acc=${accountNumber}&template=qronly&amount=${data.money}&des=CHUC MUNG NAM MOI 2025`);
+        setImgQr(`https://qr.sepay.vn/img?bank=${code}&acc=${accountNumber}&template=qronly&amount=${data.money}&des=2026 CUNG HY PHAT TAI`);
 
     }, [toast, params]);
 
